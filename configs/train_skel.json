@@ -1,0 +1,14 @@
+{
+  "num_epochs"   : 5,
+  "batch_size"   : 1,
+  "learning_rate": 1e-5,
+  "resume"       : false,
+  "chkpt"        : null,
+  "start_epoch"  : 1,
+  "exp_name"     : "default",
+  "batch_every"  : 500,
+  "epoch_every"  : 50,
+  "shuffle"      : true,
+  "dataset_path" : "../datasets/training",
+  "num_workers"  : 0
+}
