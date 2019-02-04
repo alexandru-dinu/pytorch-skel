@@ -1,14 +1,15 @@
 {
   "num_epochs"   : 5,
-  "batch_size"   : 1,
-  "learning_rate": 1e-5,
+  "batch_size"   : 16,
+  "learning_rate": 1e-4,
   "resume"       : false,
   "chkpt"        : null,
   "start_epoch"  : 1,
   "exp_name"     : "default",
-  "batch_every"  : 500,
-  "epoch_every"  : 50,
+  "batch_every"  : 100,
+  "epoch_every"  : 1,
   "shuffle"      : true,
-  "dataset_path" : "../datasets/training",
-  "num_workers"  : 0
+  "dataset_path" : null,
+  "num_workers"  : 2,
+  "device"       : "cuda"
 }

@@ -1,20 +1,25 @@
 import os
+import sys
 from argparse import Namespace
 
-import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 
 import logger
 from utils import get_config, get_args, dump_cfg
 
 
 def prologue(cfg: Namespace, *varargs) -> None:
+    # sanity checks
+    assert cfg.chkpt not in [None, ""]
+    assert cfg.device == "cpu" or (cfg.device == "cuda" and torch.cuda.is_available())
+
+    # dirs
     base_dir = f"../experiments/{cfg.exp_name}"
 
     os.makedirs(f"{base_dir}/out", exist_ok=True)
-    os.makedirs(f"{base_dir}/chkpt", exist_ok=True)
 
     dump_cfg(f"{base_dir}/test_config.txt", vars(cfg))
 
@@ -30,11 +35,25 @@ def test(cfg: Namespace) -> None:
     prologue(cfg)
 
     model = ...
+    model.eval()
+    if cfg.device == "cuda":
+        model.cuda()
+
+    logger.info("Loaded model")
+
     dataset = ...
     dataloader = ...
 
+    logger.info("Loaded data")
+
     for batch_idx, data in enumerate(dataloader, start=1):
-        pass
+        # ... = data
+        if cfg.device == 'cuda':
+            # move tensors to cuda
+            pass
+
+        if batch_idx % cfg.batch_every == 0:
+            pass
 
     # final setup
     epilogue(cfg)
