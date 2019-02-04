@@ -35,6 +35,7 @@ def test(cfg: Namespace) -> None:
     prologue(cfg)
 
     model = ...
+    model.load_state_dict(torch.load(cfg.chkpt))
     model.eval()
     if cfg.device == "cuda":
         model.cuda()
