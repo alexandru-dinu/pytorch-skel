@@ -1,0 +1,9 @@
+{
+  "chkpt"       : "../experiments/default/chkpt/model_1.pth",
+  "exp_name"    : "default",
+  "batch_every" : 100,
+  "shuffle"     : false,
+  "dataset_path": null,
+  "num_workers" : 1,
+  "device"      : "cuda"
+}
