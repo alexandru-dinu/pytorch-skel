@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-import logger
+import cli_logger
 from utils import get_config, get_args, dump_cfg
 
 
@@ -29,7 +29,7 @@ def epilogue(cfg: Namespace, *varargs) -> None:
 
 
 def test(cfg: Namespace) -> None:
-    logger.info("=== Testing ===")
+    cli_logger.info("=== Testing ===")
 
     # initial setup
     prologue(cfg)
@@ -40,12 +40,12 @@ def test(cfg: Namespace) -> None:
     if cfg.device == "cuda":
         model.cuda()
 
-    logger.info("Loaded model")
+    cli_logger.info("Loaded model")
 
     dataset = ...
     dataloader = ...
 
-    logger.info("Loaded data")
+    cli_logger.info("Loaded data")
 
     for batch_idx, data in enumerate(dataloader, start=1):
         # ... = data

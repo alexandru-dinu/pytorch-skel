@@ -11,7 +11,7 @@ from torchvision import datasets, transforms
 
 from tensorboardX import SummaryWriter
 
-import logger
+import cli_logger
 from utils import get_config, get_args, dump_cfg
 
 # models
@@ -43,7 +43,7 @@ def epilogue(cfg: Namespace, *varargs) -> None:
 
 
 def train(cfg: Namespace) -> None:
-    logger.info("=== Training ===")
+    cli_logger.info("=== Training ===")
 
     # initial setup
     writer = prologue(cfg)
@@ -57,13 +57,13 @@ def train(cfg: Namespace) -> None:
         test_x = test_x.cuda()
 
     writer.add_graph(model, Variable(test_x, requires_grad=True))
-    logger.debug("Model loaded")
+    cli_logger.debug("Model loaded")
 
 
     dataset = ...
     dataloader = ...
 
-    logger.debug("Data loaded")
+    cli_logger.debug("Data loaded")
 
 
     optimizer = ...
@@ -90,7 +90,7 @@ def train(cfg: Namespace) -> None:
 
             # optimizer
 
-            logger.debug(
+            cli_logger.debug(
                 '[%3d/%3d][%5d/%5d] avg_loss: %.8f' %
                 (epoch_idx, cfg.num_epochs, batch_idx, len(dataloader), loss)
             )
@@ -102,7 +102,7 @@ def train(cfg: Namespace) -> None:
                 for name, param in model.named_parameters():
                     writer.add_histogram(name, param, ts)
 
-                logger.debug(
+                cli_logger.debug(
                     '[%3d/%3d][%5d/%5d] avg_loss: %.8f' %
                     (epoch_idx, cfg.num_epochs, batch_idx, len(dataloader), avg_loss / cfg.batch_every)
                 )
@@ -112,7 +112,7 @@ def train(cfg: Namespace) -> None:
         # -- batch-loop
 
         if epoch_idx % cfg.epoch_every == 0:
-            logger.info("Epoch avg = %.8f" % (epoch_avg / (len(dataloader) * cfg.epoch_every)))
+            cli_logger.info("Epoch avg = %.8f" % (epoch_avg / (len(dataloader) * cfg.epoch_every)))
             epoch_avg = 0.0
             torch.save(model.state_dict(), f"../experiments/{cfg.exp_name}/chkpt/model_{epoch_idx}.pth")
     # -- train-loop
