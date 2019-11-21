@@ -1,5 +1,10 @@
-*-data/
-experiments/
+*.pt
+*.pth
+*.npy
+*.pkl
+
+exp-*
+
 .vscode
 .idea
 
