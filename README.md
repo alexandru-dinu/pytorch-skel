@@ -1,3 +1,3 @@
-# ML skel
+# ML utils
 
-Jupyter-optimized, experiment-oriented ML skel.
+Collection of useful ML utils aiming to reduce boilerplate code.
