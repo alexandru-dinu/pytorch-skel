@@ -6,26 +6,26 @@ class Config:
     Fully manages a configuration
     """
 
-    def __init__(self, data=None):
-        if isinstance(data, str):
-            self.from_json(data)
-        if isinstance(data, dict):
-            self.from_dict(data)
+    def __init__(self, data: dict = None):
+        if data is not None:
+            self.__dict__.update(data)
 
     def __str__(self):
-        return self.to_json(indent=4)
+        return json.dumps(self.__get_nested(), indent=4)
 
     def __repr__(self):
         return str(self)
 
-    @staticmethod
-    def __get_nested(d):
+    def __len__(self):
+        return len(self.__dict__)
+
+    def __get_nested(self) -> dict:
         out = {}
 
-        for k, v in d.items():
+        for k, v in self.__dict__.items():
             # nested config
             if isinstance(v, Config):
-                out[k] = Config.__get_nested(v.__dict__)
+                out[k] = Config.__get_nested(v)
 
             # non-primitive type
             elif hasattr(v, '__dict__'):
@@ -37,13 +37,11 @@ class Config:
 
         return out
 
-    @property
     def is_empty(self):
-        return len(self.__dict__) == 0
+        return len(self) == 0
 
-    def to_json(self, indent=4) -> str:
-        ns = self.__get_nested(self.__dict__)
-        return json.dumps(ns, indent=indent)
+    def to_dict(self) -> dict:
+        return self.__get_nested()
 
     def to_file(self, fname) -> None:
         with open(fname, 'wt') as fp:
