@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
 assert long_description is not None
 
 setup(
-    name='ml_utils',
+    name='aida',
     version='0.1.0',
-    description='Collection of ML utils aiming to reduce boilerplate code.',
-    author='alexandru-dinu',
+    description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
+    author='alexandru.dinu',
     author_email='alex.dinu07@gmail.com',
-    url='https://github.com/alexandru-dinu/ml-utils',
+    url='https://github.com/alexandru-dinu/aida',
     license='Apache 2.0',
     packages=find_packages(),
     long_description=long_description,
@@ -20,5 +20,6 @@ setup(
     install_requires=[],
     classifiers=[
         "Programming Language :: Python :: 3",
+        "Topic :: Scientific/Engineering"
     ],
 )

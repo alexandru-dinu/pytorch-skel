@@ -1,3 +1,3 @@
-# ML utils
+# aida
 
-Collection of useful ML utils aiming to reduce boilerplate code.
+Collection of utils (ML-oriented) aiming to reduce boilerplate code.

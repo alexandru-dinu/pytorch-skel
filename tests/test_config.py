@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from ml_utils.config import Config
+from aida.config import Config
 
 
 class TestConfig(unittest.TestCase):
