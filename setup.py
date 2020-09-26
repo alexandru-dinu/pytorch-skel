@@ -10,7 +10,7 @@ setup(
     name='aida',
     version='0.1.0',
     description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
-    author='alexandru.dinu',
+    author='Alexandru Dinu',
     author_email='alex.dinu07@gmail.com',
     url='https://github.com/alexandru-dinu/aida',
     license='Apache 2.0',
@@ -20,6 +20,8 @@ setup(
     install_requires=[],
     classifiers=[
         "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Scientific/Engineering"
     ],
 )
