@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
 assert long_description is not None
 
 setup(
-    name='aida',
+    name='bagoftools',
     version='0.1.0',
     description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
     author='Alexandru Dinu',
     author_email='alex.dinu07@gmail.com',
-    url='https://github.com/alexandru-dinu/aida',
+    url='https://github.com/alexandru-dinu/bagoftools',
     license='Apache 2.0',
     packages=find_packages(),
     long_description=long_description,

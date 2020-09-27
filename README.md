@@ -1,3 +1,3 @@
-# aida
+# bagoftools
 
-Collection of utils (ML-oriented) aiming to reduce boilerplate code.
+ Collection of utils (ML-oriented) aiming to reduce boilerplate code.

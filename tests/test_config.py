@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from aida.config import Config
+from bagoftools.config import Config
 
 
 class TestConfig(unittest.TestCase):
