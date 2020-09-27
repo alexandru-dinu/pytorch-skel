@@ -1,3 +1,4 @@
+import re
 from setuptools import find_packages, setup
 
 # Read repository information. This will be used as the package description.
@@ -6,9 +7,16 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 assert long_description is not None
 
+# Read version
+version = None
+with open('bagoftools/__init__.py', 'rt') as fh:
+    version = re.search(r"([0-9\.]+)", fh.read().strip()).group()
+assert version is not None
+
+
 setup(
     name='bagoftools',
-    version='0.1.1',
+    version=version,
     description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
     author='Alexandru Dinu',
     author_email='alex.dinu07@gmail.com',
