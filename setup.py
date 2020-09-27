@@ -8,7 +8,7 @@ assert long_description is not None
 
 setup(
     name='bagoftools',
-    version='0.1.0',
+    version='0.1.1',
     description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
     author='Alexandru Dinu',
     author_email='alex.dinu07@gmail.com',
