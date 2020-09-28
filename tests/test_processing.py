@@ -31,3 +31,7 @@ class TestProcessing(unittest.TestCase):
         ys = proc.get_batches(xs, bs)
         zs = np.array([x for y in ys for x in y])
         self.assertTrue(np.isclose(xs, zs).all())
+
+
+if __name__ == '__main__':
+    unittest.main()

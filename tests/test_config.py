@@ -35,3 +35,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(len(d), 2)
         self.assertDictEqual(d.to_dict(), target)
         self.assertEqual(str(d), json.dumps(target, indent=4))
+
+
+if __name__ == '__main__':
+    unittest.main()
