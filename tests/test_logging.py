@@ -13,7 +13,7 @@ from bagoftools.logger import Logger
 
 class TestLogging(unittest.TestCase):
     def setUp(self) -> None:
-        self.logger = Logger(name='testing')
+        self.logger = Logger(name='testing', colorize=True)
 
         # Remove handler that outputs to STDERR.
         self.logger.inner_logger.removeHandler(self.logger.inner_stream_handler)

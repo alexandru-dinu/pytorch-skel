@@ -19,16 +19,20 @@ LOG_LEVEL_LIST = [DEBUG, INFO, WARNING, ERROR, CRITICAL]
 
 class _Formatter(logging.Formatter):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, colorize=False, *args, **kwargs):
         super(_Formatter, self).__init__(*args, **kwargs)
+        self.colorize = colorize
 
     @staticmethod
-    def _colorize(msg, loglevel):
+    def _process(msg, loglevel, colorize):
         loglevel = str(loglevel).lower()
         if loglevel not in LOG_LEVEL_LIST:
             raise RuntimeError(f"{loglevel} should be oneof {LOG_LEVEL_LIST}.")  # pragma: no cover
 
         msg = f"{str(loglevel).upper()}: {str(msg)}"
+
+        if not colorize:
+            return msg
 
         if loglevel == DEBUG:
             return "{}{}{}".format(fg(5), msg, attr(0))  # noqa: E501
@@ -44,13 +48,13 @@ class _Formatter(logging.Formatter):
     def format(self, record):
         record = copy(record)
         loglevel = record.levelname
-        record.msg = _Formatter._colorize(record.msg, loglevel)
+        record.msg = _Formatter._process(record.msg, loglevel, self.colorize)
         return super(_Formatter, self).format(record)
 
 
 class Logger:
 
-    def __init__(self, name='default', stream=sys.stdout):
+    def __init__(self, name='default', colorize=False, stream=sys.stdout):
         self.name = name
         self.stream = stream
 
@@ -61,6 +65,7 @@ class Logger:
 
         # use the custom formatter
         self.__formatter = _Formatter(
+            colorize=colorize,
             fmt='[%(asctime)s.%(msecs)03d @ %(funcName)s] %(message)s',
             datefmt='%y-%m-%d %H:%M:%S'
         )
