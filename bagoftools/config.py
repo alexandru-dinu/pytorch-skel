@@ -25,9 +25,9 @@ class Config:
         for k, v in self.__dict__.items():
             # nested config
             if isinstance(v, Config):
-                out[k] = Config.__get_nested(v)
+                out[k] = '<self>' if v is self else Config.__get_nested(v)
 
-            # non-primitive type
+            # non-primitive type, call its str method
             elif hasattr(v, '__dict__'):
                 out[k] = str(v)
 
