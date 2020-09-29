@@ -1,6 +1,6 @@
 # bagoftools
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/alexandru-dinu/bagoftools/blob/master/LICENSE) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/alexandru-dinu/bagoftools/blob/master/LICENSE)
 [![Python Versions](https://img.shields.io/badge/Python-%E2%89%A53.6-blue)](https://pypi.org/project/bagoftools/)
 
 ## Install
@@ -9,6 +9,16 @@
 pip install bagoftools
 ```
 
-## Usage
+## Contents
 
-_TODO_
+```
+./bagoftools/
+├── config.py
+│   └── Config
+├── plotting.py
+│   └── stem_hist
+├── logger.py
+│   └── log_function
+└── processing.py
+    └── get_batches
+```
