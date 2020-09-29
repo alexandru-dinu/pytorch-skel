@@ -72,6 +72,8 @@ class Logger:
 
         self.__stream_handler = logging.StreamHandler(stream)
         self.__stream_handler.setFormatter(self.__formatter)
+
+        self.__logger.handlers = []
         self.__logger.addHandler(self.__stream_handler)
 
         # install logging functions
