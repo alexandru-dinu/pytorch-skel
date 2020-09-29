@@ -1,22 +1,27 @@
 import io
-import unittest
+import logging
+import os
 import random
 import string
+import sys
+import unittest
+import uuid
 from threading import Thread
 
-import logging
-from bagoftools import logger
+from bagoftools.logger import Logger
 
 
 class TestLogging(unittest.TestCase):
     def setUp(self) -> None:
+        self.logger = Logger(name='testing')
+
         # Remove handler that outputs to STDERR.
-        logger.inner_logger.removeHandler(logger.inner_stream_handler)
+        self.logger.inner_logger.removeHandler(self.logger.inner_stream_handler)
         self.log_capture = io.StringIO()
         handler = logging.StreamHandler(self.log_capture)
-        handler.setFormatter(logger.inner_formatter)
-        logger.inner_logger.addHandler(handler)
-        logger.setLevel(logging.DEBUG)
+        handler.setFormatter(self.logger.inner_formatter)
+        self.logger.inner_logger.addHandler(handler)
+        self.logger.setLevel(logging.DEBUG)
 
     def tearDown(self):
         pass
@@ -34,49 +39,72 @@ class TestLogging(unittest.TestCase):
     def num_lines(self):
         return len(self.log_capture.getvalue().splitlines())
 
+    def test_properties(self):
+        self.assertEqual(self.logger.name, 'testing')
+        self.assertEqual(self.logger.stream, sys.stdout)
+
+    def test_logging_to_file(self):
+        tmp = f'/tmp/{uuid.uuid4().hex}.txt'
+
+        with open(tmp, 'wt') as fh:
+            file_logger = Logger(name='file-logger', stream=fh)
+            file_logger.debug('logging')
+            file_logger.info('to')
+            file_logger.warning('a')
+            file_logger.error('txt')
+            file_logger.critical('file')
+
+        with open(tmp, 'rt') as fh:
+            content = '\n'.join([x.strip() for x in fh.readlines()])
+            for k in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                self.assertIn(k, content)
+
+        os.remove(tmp)
+        self.assertFalse(os.path.exists(tmp))
+
     def test_level_is_logged(self):
-        logger.debug("message 1")
+        self.logger.debug("message 1")
         self.assertIn("DEBUG", self.last_line())
-        logger.info("message 2")
+        self.logger.info("message 2")
         self.assertIn("INFO", self.last_line())
-        logger.warning("message 3")
+        self.logger.warning("message 3")
         self.assertIn("WARNING", self.last_line())
-        logger.error("message 4")
+        self.logger.error("message 4")
         self.assertIn("ERROR", self.last_line())
-        logger.critical("message 5")
+        self.logger.critical("message 5")
         self.assertIn("CRITICAL", self.last_line())
 
     def test_function_is_logged(self):
-        logger.debug("message 1")
+        self.logger.debug("message 1")
         self.assertIn(" test_function_is_logged", self.last_line())
-        logger.info("message 2")
+        self.logger.info("message 2")
         self.assertIn(" test_function_is_logged", self.last_line())
-        logger.warning("message 3")
+        self.logger.warning("message 3")
         self.assertIn(" test_function_is_logged", self.last_line())
-        logger.error("message 4")
+        self.logger.error("message 4")
         self.assertIn(" test_function_is_logged", self.last_line())
-        logger.critical("message 5")
+        self.logger.critical("message 5")
         self.assertIn(" test_function_is_logged", self.last_line())
 
     def test_message_is_logged(self):
-        logger.debug("message 1")
+        self.logger.debug("message 1")
         self.assertIn("message 1", self.last_line())
-        logger.info("message 2")
+        self.logger.info("message 2")
         self.assertIn("message 2", self.last_line())
-        logger.warning("message 3")
+        self.logger.warning("message 3")
         self.assertIn("message 3", self.last_line())
-        logger.error("message 4")
+        self.logger.error("message 4")
         self.assertIn("message 4", self.last_line())
-        logger.critical("message 5")
+        self.logger.critical("message 5")
         self.assertIn("message 5", self.last_line())
 
     def test_levels(self):
         def log_all():
-            logger.debug("message 1")
-            logger.info("message 2")
-            logger.warning("message 3")
-            logger.error("message 4")
-            logger.critical("message 5")
+            self.logger.debug("message 1")
+            self.logger.info("message 2")
+            self.logger.warning("message 3")
+            self.logger.error("message 4")
+            self.logger.critical("message 5")
 
         def test_last(expected):
             self.assertIsInstance(expected, list)
@@ -86,39 +114,39 @@ class TestLogging(unittest.TestCase):
                 self.assertIn(exp, output)
 
         expected_logs = [
-                "DEBUG: message 1",
-                "INFO: message 2",
-                "WARNING: message 3",
-                "ERROR: message 4",
-                "CRITICAL: message 5"
+            "DEBUG: message 1",
+            "INFO: message 2",
+            "WARNING: message 3",
+            "ERROR: message 4",
+            "CRITICAL: message 5"
         ]
 
         # Debug.
-        logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.DEBUG)
         log_all()
         self.assertEqual(self.num_lines(), 5)
         test_last(expected_logs)
 
         # Info.
-        logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.INFO)
         log_all()
         self.assertEqual(self.num_lines(), 5 + 4)
         test_last(expected_logs[1:])
 
         # Warning.
-        logger.setLevel(logging.WARNING)
+        self.logger.setLevel(logging.WARNING)
         log_all()
         self.assertEqual(self.num_lines(), 5 + 4 + 3)
         test_last(expected_logs[2:])
 
         # Error.
-        logger.setLevel(logging.ERROR)
+        self.logger.setLevel(logging.ERROR)
         log_all()
         self.assertEqual(self.num_lines(), 5 + 4 + 3 + 2)
         test_last(expected_logs[3:])
 
         # Critical.
-        logger.setLevel(logging.CRITICAL)
+        self.logger.setLevel(logging.CRITICAL)
         log_all()
         self.assertEqual(self.num_lines(), 5 + 4 + 3 + 2 + 1)
         test_last(expected_logs[4:])
@@ -128,11 +156,11 @@ class TestLogging(unittest.TestCase):
 
         def log_all(msg):
             for _ in range(0, 11):
-                logger.debug(msg)
-                logger.info(msg)
-                logger.warning(msg)
-                logger.error(msg)
-                logger.critical(msg)
+                self.logger.debug(msg)
+                self.logger.info(msg)
+                self.logger.warning(msg)
+                self.logger.error(msg)
+                self.logger.critical(msg)
 
         # Generate a random long message for each thread.
         messages = []
@@ -176,28 +204,28 @@ class TestLogging(unittest.TestCase):
                 self.assertEqual(count_in(log, level + ": " + msg), 11)
 
     def test_terminal_logging(self):
-        logger.info("message to terminal device")
+        self.logger.info("message to terminal device")
         self.assertIn("INFO", self.last_line())
         # 80 (the length without colors) + 2 coloring characters.
         self.assertGreaterEqual(len(self.last_line()), 80 + 2)
 
-        logger.warning("message to terminal device")
+        self.logger.warning("message to terminal device")
         self.assertIn("WARNING", self.last_line())
         # 83 (the length without colors) + 4 coloring characters.
         self.assertGreaterEqual(len(self.last_line()), 83 + 4)
 
     def test_non_str_logging(self):
-        logger.info(10)
+        self.logger.info(10)
         self.assertIn("10", self.last_line())
 
         # Those should not throw any error.
-        logger.debug([10, 20, 30])
-        logger.critical({})
-        logger.warning(set([-1, 4]))
+        self.logger.debug([10, 20, 30])
+        self.logger.critical({})
+        self.logger.warning({-1, 4})
 
     def test_function_wrapping(self):
 
-        @logger.log_function(logger)
+        @self.logger.log_function()
         def _test(a, b, x, delta):
             return a * b + x / delta
 

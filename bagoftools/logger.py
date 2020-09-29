@@ -1,13 +1,12 @@
 """
-Borrowed from https://github.com/SebiSebi/friendlylog
+Inspired from https://github.com/SebiSebi/friendlylog
 """
 
 import logging
 import sys
-
-from colored import fg, attr
 from copy import copy
 
+from colored import attr, fg
 
 DEBUG = "debug"
 INFO = "info"
@@ -16,9 +15,6 @@ ERROR = "error"
 CRITICAL = "critical"
 
 LOG_LEVEL_LIST = [DEBUG, INFO, WARNING, ERROR, CRITICAL]
-
-# Where the logs should be sent.
-_STREAM = sys.stdout
 
 
 class _Formatter(logging.Formatter):
@@ -30,7 +26,7 @@ class _Formatter(logging.Formatter):
     def _colorize(msg, loglevel):
         loglevel = str(loglevel).lower()
         if loglevel not in LOG_LEVEL_LIST:
-            raise RuntimeError(f"{loglevel} should be oneof {LOG_LEVEL_LIST}.") # pragma: no cover
+            raise RuntimeError(f"{loglevel} should be oneof {LOG_LEVEL_LIST}.")  # pragma: no cover
 
         msg = f"{str(loglevel).upper()}: {str(msg)}"
 
@@ -52,44 +48,58 @@ class _Formatter(logging.Formatter):
         return super(_Formatter, self).format(record)
 
 
-_logger = logging.getLogger("bagoftools.logger" + "-" + __name__)
-_logger.propagate = False
+class Logger:
 
-_stream_handler = logging.StreamHandler(_STREAM)
-_formatter = _Formatter(
-        fmt='[%(asctime)s.%(msecs)03d @ %(funcName)s] %(message)s',
-        datefmt='%y-%m-%d %H:%M:%S'
-)
-_stream_handler.setFormatter(_formatter)
-_logger.addHandler(_stream_handler)
-_logger.setLevel(logging.DEBUG)
+    def __init__(self, name='default', stream=sys.stdout):
+        self.name = name
+        self.stream = stream
 
+        # get the logger object; keep it hidden as there's no need to directly access it
+        self.__logger = logging.getLogger(f"bagoftools.logger-{name}")
+        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.propagate = False
 
-# Export functions and objects.
-inner_logger = _logger  # Don't use this except if you know what you are doing.
-inner_stream_handler = _stream_handler  # Same thing for this object.
-inner_formatter = _formatter  # Same thing for this object.
+        # use the custom formatter
+        self.__formatter = _Formatter(
+            fmt='[%(asctime)s.%(msecs)03d @ %(funcName)s] %(message)s',
+            datefmt='%y-%m-%d %H:%M:%S'
+        )
 
+        self.__stream_handler = logging.StreamHandler(stream)
+        self.__stream_handler.setFormatter(self.__formatter)
+        self.__logger.addHandler(self.__stream_handler)
 
-setLevel = _logger.setLevel
-debug = _logger.debug
-info = _logger.info
-warning = _logger.warning
-error = _logger.error
-critical = _logger.critical
+        # install logging functions
+        self.setLevel = self.__logger.setLevel
+        self.debug = self.__logger.debug
+        self.info = self.__logger.info
+        self.warning = self.__logger.warning
+        self.error = self.__logger.error
+        self.critical = self.__logger.critical
 
+    def log_function(self):
+        def wrapper(func):
+            def func_wrapper(*args, **kwargs):
+                self.__logger.info(f'calling <{func.__name__}>\n\t  args: {args}\n\tkwargs: {kwargs}')
+                out = func(*args, **kwargs)
+                self.__logger.info(f'exiting <{func.__name__}>')
 
-def log_function(logger):
+                return out
 
-    def wrapper(func):
+            return func_wrapper
 
-        def func_wrapper(*args, **kwargs):
-            logger.info(f'calling <{func.__name__}>\n\t  args: {args}\n\tkwargs: {kwargs}')
-            out = func(*args, **kwargs)
-            logger.info(f'exiting <{func.__name__}>')
+        return wrapper
 
-            return out
+    # Don't use these unless you know what you are doing
 
-        return func_wrapper
+    @property
+    def inner_logger(self):
+        return self.__logger
 
-    return wrapper
+    @property
+    def inner_stream_handler(self):
+        return self.__stream_handler
+
+    @property
+    def inner_formatter(self):
+        return self.__formatter
