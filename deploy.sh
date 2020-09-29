@@ -6,7 +6,7 @@ clean () {
 
 clean
 
-pipreqs . --force && sed -i '' 's/==/>=/' requirements.txt && sort -o requirements.txt requirements.txt
+pipreqs . --force && sed -i 's/==/>=/' requirements.txt && sort -o requirements.txt requirements.txt
 sleep 1
 
 python setup.py sdist bdist_wheel

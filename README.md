@@ -15,12 +15,13 @@ pip install bagoftools
 
 ```
 ./bagoftools/
-├── plotting.py
-│   └── stem_hist
+├── config.py
+│   └── Config
 ├── logger.py
 │   └── Logger
-├── processing.py
-│   └── get_batches
-└── config.py
-    └── Config
+├── plotting.py
+│   ├── heatmap
+│   └── stem_hist
+└── processing.py
+    └── get_batches
 ```

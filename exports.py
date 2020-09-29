@@ -1,16 +1,18 @@
-import os
 import ast
 import glob
+import os
 from collections import defaultdict
 
 LIB = 'bagoftools'
 VALID_INSTANCES = [ast.FunctionDef, ast.ClassDef]
+
 
 def is_valid(obj):
     if any((isinstance(obj, inst) for inst in VALID_INSTANCES)):
         if not obj.name.startswith('_'):
             return True
     return False
+
 
 exports = defaultdict(lambda: [])
 
@@ -24,19 +26,20 @@ for module in glob.glob(f'{LIB}/*.py'):
         if is_valid(obj):
             exports[os.path.basename(module)].append(obj.name)
 
-
-SPACE  = '    '
+SPACE = '    '
 BRANCH = '│   '
-TEE    = '├── '
-LAST   = '└── '
+TEE = '├── '
+LAST = '└── '
+
 
 def print_tree(exports):
     print(f'./{LIB}/')
     ptrs = [TEE] * (len(exports) - 1) + [LAST]
-    for ptr, module in zip(ptrs, exports.keys()):
+    for ptr, module in zip(ptrs, sorted(exports.keys())):
         print(f'{ptr}{module}')
         p = BRANCH if ptr == TEE else SPACE
-        xs = [f'{p}{TEE}{o}' for o in exports[module][:-1]] + [f'{p}{LAST}{exports[module][-1]}']
-        print('\n'.join(xs))
+        xs = sorted(exports[module])
+        print('\n'.join([f'{p}{TEE}{o}' for o in xs[:-1]] + [f'{p}{LAST}{xs[-1]}']))
+
 
 print_tree(exports)
