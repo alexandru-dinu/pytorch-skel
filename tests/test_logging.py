@@ -39,9 +39,20 @@ class TestLogging(unittest.TestCase):
     def num_lines(self):
         return len(self.log_capture.getvalue().splitlines())
 
+    def one_shot(self, _logger):
+        _logger.debug('D')
+        self.assertIn("DEBUG", self.last_line())
+        _logger.info('I')
+        self.assertIn("INFO", self.last_line())
+        _logger.warning('W')
+        self.assertIn("WARNING", self.last_line())
+        _logger.error('E')
+        self.assertIn("ERROR", self.last_line())
+        _logger.critical('C')
+        self.assertIn("CRITICAL", self.last_line())
+
     def test_properties(self):
         self.assertEqual(self.logger.name, 'testing')
-        self.assertEqual(self.logger.stream, sys.stdout)
 
     def test_logging_to_file(self):
         tmp = f'/tmp/{uuid.uuid4().hex}.txt'
@@ -61,6 +72,51 @@ class TestLogging(unittest.TestCase):
 
         os.remove(tmp)
         self.assertFalse(os.path.exists(tmp))
+
+    def test_multiple_handlers(self):
+        tmp = f'/tmp/{uuid.uuid4().hex}.txt'
+
+        fh = open(tmp, 'wt')
+
+        self.logger.add_handler(fh)
+        self.assertEqual(len(self.logger.get_handlers()), 2)
+
+        # test that output goes to both streams
+        self.one_shot(self.logger)
+
+        rc = self.logger.remove_handler(fh)
+        self.assertTrue(rc)
+
+        # remove once again
+        rc = self.logger.remove_handler(fh)
+        self.assertFalse(rc)
+
+        self.assertEqual(len(self.logger.get_handlers()), 1)
+        fh.close()
+
+        # test that removing a non-existent handler does nothing
+        fh2 = open('/dev/null', 'wt')
+        rc = self.logger.remove_handler(fh2)
+        self.assertFalse(rc)
+        self.assertEqual(len(self.logger.get_handlers()), 1)
+        fh2.close()
+
+        with open(tmp, 'rt') as fh:
+            content = '\n'.join([x.strip() for x in fh.readlines()])
+            for k in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                self.assertIn(k, content)
+
+        os.remove(tmp)
+        self.assertFalse(os.path.exists(tmp))
+
+        # test that output to main stream is still ok
+        self.one_shot(self.logger)
+
+        # test that clearing handlers work
+        self.logger.clear_handlers()
+        self.assertEqual(len(self.logger.get_handlers()), 0)
+        self.logger.debug('nothing')
+        self.assertNotIn('nothing', self.last_line())
 
     def test_level_is_logged(self):
         self.logger.debug("message 1")

@@ -1,5 +1,5 @@
 """
-Inspired from https://github.com/SebiSebi/friendlylog
+Inspired by https://github.com/SebiSebi/friendlylog
 """
 
 import logging
@@ -56,7 +56,6 @@ class Logger:
 
     def __init__(self, name='default', colorize=False, stream=sys.stdout):
         self.name = name
-        self.stream = stream
 
         # get the logger object; keep it hidden as there's no need to directly access it
         self.__logger = logging.getLogger(f"bagoftools.logger-{name}")
@@ -70,11 +69,10 @@ class Logger:
             datefmt='%y-%m-%d %H:%M:%S'
         )
 
-        self.__stream_handler = logging.StreamHandler(stream)
-        self.__stream_handler.setFormatter(self.__formatter)
-
-        self.__logger.handlers = []
-        self.__logger.addHandler(self.__stream_handler)
+        # install default handler
+        self.__stream_to_handler = {}
+        self.clear_handlers()
+        self.__main_handler = self.add_handler(stream)
 
         # install logging functions
         self.setLevel = self.__logger.setLevel
@@ -90,12 +88,30 @@ class Logger:
                 self.__logger.info(f'calling <{func.__name__}>\n\t  args: {args}\n\tkwargs: {kwargs}')
                 out = func(*args, **kwargs)
                 self.__logger.info(f'exiting <{func.__name__}>')
-
                 return out
-
             return func_wrapper
-
         return wrapper
+
+    def add_handler(self, stream) -> logging.StreamHandler:
+        handler = logging.StreamHandler(stream)
+        handler.setFormatter(self.__formatter)
+        self.__logger.addHandler(handler)
+        self.__stream_to_handler[stream] = handler
+        return handler
+
+    def remove_handler(self, stream) -> bool:
+        if stream in self.__stream_to_handler:
+            self.__logger.removeHandler(self.__stream_to_handler[stream])
+            self.__stream_to_handler.pop(stream)
+            return True
+        return False
+
+    def clear_handlers(self) -> None:
+        self.__logger.handlers = []
+        self.__stream_to_handler = {}
+
+    def get_handlers(self) -> list:
+        return self.__logger.handlers
 
     # Don't use these unless you know what you are doing
 
@@ -105,7 +121,7 @@ class Logger:
 
     @property
     def inner_stream_handler(self):
-        return self.__stream_handler
+        return self.__main_handler
 
     @property
     def inner_formatter(self):
