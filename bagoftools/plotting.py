@@ -4,9 +4,6 @@ import seaborn as sns
 
 
 def stem_hist(xs: np.ndarray, show_now=True, linefmt='C0-', markerfmt='C0o') -> None:
-    if not np.isclose(xs, np.round(xs)).all():
-        raise ValueError("To be used only with discrete data.")
-
     x, f = np.unique(xs, return_counts=True)
     f = f / f.sum()
 
