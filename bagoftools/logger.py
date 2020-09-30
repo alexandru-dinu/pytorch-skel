@@ -37,7 +37,7 @@ class _Formatter(logging.Formatter):
         if loglevel == DEBUG:
             return "{}{}{}".format(fg(5), msg, attr(0))  # noqa: E501
         if loglevel == INFO:
-            return "{}{}{}".format(fg(51), msg, attr(0))  # noqa: E501
+            return "{}{}{}".format(fg(4), msg, attr(0))  # noqa: E501
         if loglevel == WARNING:
             return "{}{}{}{}{}".format(fg(214), attr(1), msg, attr(21), attr(0))  # noqa: E501
         if loglevel == ERROR:
