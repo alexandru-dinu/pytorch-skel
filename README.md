@@ -23,5 +23,6 @@ pip install bagoftools
 │   ├── heatmap
 │   └── stem_hist
 └── processing.py
-    └── get_batches
+    ├── get_batches
+    └── map_batchwise
 ```
