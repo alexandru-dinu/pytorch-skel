@@ -5,6 +5,7 @@ Inspired by https://github.com/SebiSebi/friendlylog
 import logging
 import sys
 from copy import copy
+from typing import Union
 
 from colored import attr, fg
 
@@ -14,7 +15,13 @@ WARNING = "warning"
 ERROR = "error"
 CRITICAL = "critical"
 
-LOG_LEVEL_LIST = [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+LOG_LEVELS = {
+    DEBUG   : logging.DEBUG,
+    INFO    : logging.INFO,
+    WARNING : logging.WARNING,
+    ERROR   : logging.ERROR,
+    CRITICAL: logging.CRITICAL
+}
 
 
 class _Formatter(logging.Formatter):
@@ -26,8 +33,8 @@ class _Formatter(logging.Formatter):
     @staticmethod
     def _process(msg, loglevel, colorize):
         loglevel = str(loglevel).lower()
-        if loglevel not in LOG_LEVEL_LIST:
-            raise RuntimeError(f"{loglevel} should be oneof {LOG_LEVEL_LIST}.")  # pragma: no cover
+        if loglevel not in LOG_LEVELS:
+            raise RuntimeError(f"{loglevel} should be one of {LOG_LEVELS}.")  # pragma: no cover
 
         msg = f"{str(loglevel).upper()}: {str(msg)}"
 
@@ -54,13 +61,13 @@ class _Formatter(logging.Formatter):
 
 class Logger:
 
-    def __init__(self, name='default', colorize=False, stream=sys.stdout):
+    def __init__(self, name='default', colorize=False, stream=sys.stdout, level=DEBUG):
         self.name = name
 
         # get the logger object; keep it hidden as there's no need to directly access it
         self.__logger = logging.getLogger(f"bagoftools.logger-{name}")
-        self.__logger.setLevel(logging.DEBUG)
         self.__logger.propagate = False
+        self.setLevel(level.lower())
 
         # use the custom formatter
         self.__formatter = _Formatter(
@@ -75,7 +82,6 @@ class Logger:
         self.__main_handler = self.add_handler(stream)
 
         # install logging functions
-        self.setLevel = self.__logger.setLevel
         self.debug = self.__logger.debug
         self.info = self.__logger.info
         self.warning = self.__logger.warning
@@ -91,6 +97,14 @@ class Logger:
                 return out
             return func_wrapper
         return wrapper
+
+    def setLevel(self, level: Union[str, int]) -> None:
+        if isinstance(level, int):
+            self.__logger.setLevel(level)
+        else:
+            if level.lower() not in LOG_LEVELS:
+                raise ValueError(f'level should be one of {LOG_LEVELS}')
+            self.__logger.setLevel(LOG_LEVELS[level.lower()])
 
     def add_handler(self, stream) -> logging.StreamHandler:
         handler = logging.StreamHandler(stream)

@@ -8,7 +8,7 @@ import unittest
 import uuid
 from threading import Thread
 
-from bagoftools.logger import Logger
+from bagoftools.logger import Logger, LOG_LEVELS
 
 
 class TestLogging(unittest.TestCase):
@@ -53,6 +53,26 @@ class TestLogging(unittest.TestCase):
 
     def test_properties(self):
         self.assertEqual(self.logger.name, 'testing')
+
+    def test_levels(self):
+        il = self.logger.inner_logger
+        self.assertEqual(il.level, logging.DEBUG)
+
+        levels = ['debug',    'DEBUG',    logging.DEBUG,
+                  'info',     'INFO',     logging.INFO,
+                  'warning',  'WARNING',  logging.WARNING,
+                  'error',    'ERROR',    logging.ERROR,
+                  'critical', 'CRITICAL', logging.CRITICAL]
+        random.shuffle(levels)
+
+        for l in levels:
+            self.logger.setLevel(l)
+            if isinstance(l, int):
+                self.assertEqual(il.level, l)
+            else:
+                self.assertEqual(il.level, LOG_LEVELS[l.lower()])
+
+        il.setLevel(logging.DEBUG)
 
     def test_logging_to_file(self):
         tmp = f'/tmp/{uuid.uuid4().hex}.txt'
