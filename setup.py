@@ -16,7 +16,7 @@ with open('requirements.txt', 'rt') as fh:
 setup(
     name='bagoftools',
     version=version,
-    description='Collection of utils (ML-oriented) aiming to reduce boilerplate code.',
+    description='Collection of utility functions aiming to reduce boilerplate code.',
     author='Alexandru Dinu',
     author_email='alex.dinu07@gmail.com',
     url='https://github.com/alexandru-dinu/bagoftools',
