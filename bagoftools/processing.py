@@ -2,6 +2,9 @@ import numpy as np
 
 
 def map_batchwise(xs: np.ndarray, bs: int, func: callable) -> list:
+    """
+    Maps a function over batch of data and collects the batches.
+    """
     if not isinstance(xs, np.ndarray):
         xs = np.array(xs)
 
@@ -21,4 +24,7 @@ def map_batchwise(xs: np.ndarray, bs: int, func: callable) -> list:
 
 
 def get_batches(xs: np.ndarray, bs: int) -> list:
+    """
+    Split input array in batches of given size.
+    """
     return map_batchwise(xs, bs, func=lambda x: x)

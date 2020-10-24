@@ -1,6 +1,3 @@
 colored
 matplotlib
 numpy
-pandas
-seaborn
-tqdm
