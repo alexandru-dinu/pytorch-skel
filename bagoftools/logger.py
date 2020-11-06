@@ -9,10 +9,10 @@ from typing import Union
 
 from colored import attr, fg
 
-DEBUG = "debug"
-INFO = "info"
-WARNING = "warning"
-ERROR = "error"
+DEBUG    = "debug"
+INFO     = "info"
+WARNING  = "warning"
+ERROR    = "error"
 CRITICAL = "critical"
 
 LOG_LEVELS = {
@@ -72,7 +72,7 @@ class Logger:
         # use the custom formatter
         self.__formatter = _Formatter(
             colorize=colorize,
-            fmt='[%(asctime)s.%(msecs)03d @ %(funcName)s] %(message)s',
+            fmt='[%(process)d][%(asctime)s.%(msecs)03d @ %(funcName)s] %(message)s',
             datefmt='%y-%m-%d %H:%M:%S'
         )
 

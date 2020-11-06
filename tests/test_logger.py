@@ -11,7 +11,7 @@ from threading import Thread
 from bagoftools.logger import Logger, LOG_LEVELS
 
 
-class TestLogging(unittest.TestCase):
+class TestLogger(unittest.TestCase):
     def setUp(self) -> None:
         self.logger = Logger(name='testing', colorize=True)
 
@@ -54,7 +54,7 @@ class TestLogging(unittest.TestCase):
     def test_properties(self):
         self.assertEqual(self.logger.name, 'testing')
 
-    def test_levels(self):
+    def test_level_change(self):
         il = self.logger.inner_logger
         self.assertEqual(il.level, logging.DEBUG)
 
