@@ -1,9 +1,8 @@
 import io
-import logging
 import os
 import random
+import logging
 import string
-import sys
 import unittest
 import uuid
 from threading import Thread
@@ -227,11 +226,11 @@ class TestLogger(unittest.TestCase):
         self.assertEqual(self.num_lines(), 5 + 4 + 3 + 2 + 1)
         test_last(expected_logs[4:])
 
-    def test_multi_threaded_is_ok(self):
+    def test_multithreading(self):
         num_threads = 75
 
         def log_all(msg):
-            for _ in range(0, 11):
+            for _ in range(11):
                 self.logger.debug(msg)
                 self.logger.info(msg)
                 self.logger.warning(msg)
@@ -244,16 +243,14 @@ class TestLogger(unittest.TestCase):
             msg = []
             length = random.randint(500, 2000)
             alphabet = string.punctuation + string.ascii_letters + string.digits  # noqa: E501
-            for i in range(0, length):
+            for _ in range(length):
                 msg.append(random.choice(list(alphabet)))
             messages.append(''.join(msg))
             self.assertNotIn('\n', messages[-1])
         self.assertEqual(len(messages), num_threads)
 
         # Create, start and stop threads.
-        threads = []
-        for i in range(0, num_threads):
-            threads.append(Thread(target=log_all, args=(messages[i],)))
+        threads = [Thread(target=log_all, args=(messages[i],)) for i in range(num_threads)]
         for thread in threads:
             thread.start()
         for thread in threads:
@@ -268,11 +265,7 @@ class TestLogger(unittest.TestCase):
 
         # Counts in how many elements of @array, @substr can be found.
         def count_in(array, substr):
-            cnt = 0
-            for el in array:
-                if substr in el:
-                    cnt += 1
-            return cnt
+            return sum((substr in el for el in array))
 
         for msg in messages:
             self.assertEqual(count_in(log, msg), 11 * 5)
