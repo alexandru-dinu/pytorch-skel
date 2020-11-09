@@ -11,7 +11,17 @@ pip install bagoftools
 
 ## Contents
 
-_TODO_
+```yaml
+- config:
+  - Config        # Namespace for managing experiment configurations.
+- logger:
+  - Logger        # Wrapper over Python's logger, colorized and more user-friendly.
+- plotting:
+  - stem_hist     # Histogram on a stem plot.
+- processing:
+  - map_batchwise # Map a function over a batch of data and collect the results.
+  - get_batches   # Split the input array in batches of given size.
+```
 
 ## Disclaimer
 

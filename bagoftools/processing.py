@@ -3,7 +3,7 @@ import numpy as np
 
 def map_batchwise(xs: np.ndarray, bs: int, func: callable) -> list:
     """
-    Maps a function over batch of data and collects the batches.
+    Map a function over a batch of data and collect the results.
     """
     if not isinstance(xs, np.ndarray):
         xs = np.array(xs)
