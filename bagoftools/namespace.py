@@ -1,14 +1,18 @@
 import json
 
 
-class Config:
-    """
-    Fully manages a configuration
-    """
+class Namespace:
+    def __init__(self, **kwargs):
+        self.__dict__.update({k: self.__elt(v) for k, v in kwargs.items()})
 
-    def __init__(self, data: dict = None):
-        if data is not None:
-            self.__dict__.update(data)
+    def __elt(self, xs):
+        if isinstance(xs, dict):
+            return Namespace(**xs)
+
+        if isinstance(xs, (list, tuple)):
+            return [self.__elt(x) for x in xs]
+
+        return xs
 
     def __str__(self):
         return json.dumps(self.__get_nested(), indent=4)
@@ -23,9 +27,9 @@ class Config:
         out = {}
 
         for k, v in self.__dict__.items():
-            # nested config
-            if isinstance(v, Config):
-                out[k] = '<self>' if v is self else Config.__get_nested(v)
+            # nested
+            if isinstance(v, Namespace):
+                out[k] = '<self>' if v is self else Namespace.__get_nested(v)
 
             # non-primitive type, call its str method
             elif hasattr(v, '__dict__'):

@@ -12,8 +12,8 @@ pip install bagoftools
 ## Contents
 
 ```yaml
-- config:
-  - Config        # Namespace for managing experiment configurations.
+- namespace:
+  - Namespace     # Recursive namespace (useful for managing experiment configurations).
 - logger:
   - Logger        # Wrapper over Python's logger, colorized and more user-friendly.
 - plotting:
