@@ -19,8 +19,7 @@ pip install bagoftools
 - plotting:
   - stem_hist     # Histogram on a stem plot.
 - processing:
-  - map_batchwise # Map a function over a batch of data and collect the results.
-  - get_batches   # Split the input array in batches of given size.
+  - batchify      # Get batches of data, optionally mapping a function over each batch.
 ```
 
 ## Disclaimer

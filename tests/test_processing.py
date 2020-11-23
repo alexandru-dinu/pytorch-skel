@@ -17,7 +17,7 @@ class TestProcessing(unittest.TestCase):
         for n in ns:
             for bs in np.arange(1, n + 1):
                 xs = np.random.uniform(size=n)
-                ys = proc.get_batches(xs, int(bs))
+                ys = list(proc.batchify(xs, int(bs)))
                 self.assertEqual(len(ys), n // bs + (n % bs > 0))
                 for y in ys[:-1]:
                     self.assertEqual(len(y), bs)
@@ -28,7 +28,7 @@ class TestProcessing(unittest.TestCase):
         n = np.random.randint(100, 200)
         bs = np.random.randint(1, 32)
         xs = np.random.uniform(size=n)
-        ys = proc.get_batches(xs, bs)
+        ys = proc.batchify(xs, bs)
         zs = np.array([x for y in ys for x in y])
         self.assertTrue(np.isclose(xs, zs).all())
 
@@ -36,7 +36,7 @@ class TestProcessing(unittest.TestCase):
         for _type in [list, tuple]:
             xs = _type(range(100))
             bs = 25
-            ys = proc.get_batches(xs, bs)
+            ys = list(proc.batchify(xs, bs))
             self.assertEqual(len(ys), 4)
             for y in ys:
                 self.assertEqual(len(y), bs)
@@ -45,11 +45,11 @@ class TestProcessing(unittest.TestCase):
         xs = np.random.uniform(size=100)
         for bs in [-10, 0, 10000, -0.12, 7.123]:
             with self.assertRaises(ValueError):
-                _ = proc.get_batches(xs, bs)
+                _ = list(proc.batchify(xs, bs))
 
     def test_map_function(self):
         xs = [1.1, -0.25, 3]
-        ys = proc.map_batchwise(xs, bs=3, func=lambda x: np.round(abs(x)))
+        ys = list(proc.batchify(xs, bs=3, func=lambda x: np.round(abs(x))))
         self.assertTrue((ys[0] == [1, 0, 3]).all())
 
 
