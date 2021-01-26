@@ -1,5 +1,6 @@
 # bagoftools
 
+[![workflow](https://github.com/alexandru-dinu/bagoftools/workflows/CI/badge.svg)](https://github.com/alexandru-dinu/bagoftools/actions?query=workflow%3ACI)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/alexandru-dinu/bagoftools/blob/master/LICENSE)
 [![pypi](https://img.shields.io/pypi/v/bagoftools.svg)](https://pypi.org/project/bagoftools/)
 
